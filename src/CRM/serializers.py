@@ -1,6 +1,6 @@
+from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from models import *
-from django.shortcuts import get_object_or_404
+from .models import *
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -31,3 +31,16 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Event
+
+
+class GroupSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = Group
+        fields = ('name',)
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True)
+    class Meta:
+        fields = ['first_name', 'last_name', 'email', 'date_joined', 'groups']
+        model = User
