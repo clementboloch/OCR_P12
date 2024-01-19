@@ -31,19 +31,3 @@ class Event(models.Model):
     attendees = models.IntegerField()
     notes = models.TextField(max_length=10000)
     support_contact = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
-class Department(models.Model):
-    COMMERCIAL = "C"
-    SUPPORT = "S"
-    GESTION = "G"
-    DEPARTMENT_CHOICES = [
-        (COMMERCIAL, "Commercial"),
-        (SUPPORT, "Support"),
-        (GESTION, "Gestion"),
-    ]
-    name = models.CharField(
-        max_length=1,
-        choices=DEPARTMENT_CHOICES,
-    )
-
