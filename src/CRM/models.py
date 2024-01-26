@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 
 class Client(models.Model):
     name = models.CharField(max_length=50)
-    email = models.EmailField(max_length=50, unique=True)
-    phone = models.CharField(max_length=50)
-    company = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50, unique=True, null=True, blank=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
+    company = models.CharField(max_length=50, null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(auto_now=True)
-    commercial_contact = models.ForeignKey(User, on_delete=models.CASCADE)
+    commercial_contact = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.email
@@ -17,17 +17,22 @@ class Client(models.Model):
 
 class Contract(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    amount = models.FloatField(max_length=50)
-    outstanding_amount = models.FloatField(max_length=50)
+    amount = models.FloatField(max_length=50, null=True, blank=True)
+    outstanding_amount = models.FloatField(max_length=50, null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
     is_signed = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.outstanding_amount == None:
+            self.outstanding_amount = self.amount
+        super(Contract, self).save(*args, **kwargs)
 
 
 class Event(models.Model):
     contract = models.ForeignKey(Contract, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    location = models.CharField(max_length=50)
-    attendees = models.IntegerField()
-    notes = models.TextField(max_length=10000)
-    support_contact = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
+    attendees = models.IntegerField(null=True, blank=True)
+    notes = models.TextField(max_length=10000, null=True, blank=True)
+    support_contact = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
