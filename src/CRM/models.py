@@ -18,8 +18,8 @@ class Client(models.Model):
 class Contract(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     amount = models.FloatField(max_length=50)
-    outstading_amount = models.FloatField(max_length=50)
-    created_date = models.DateTimeField(auto_now_add=True)
+    outstanding_amount = models.FloatField(max_length=50)
+    created_date = models.DateField(auto_now_add=True)
     is_signed = models.BooleanField(default=False)
 
 
