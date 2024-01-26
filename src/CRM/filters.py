@@ -29,6 +29,13 @@ class ContractFilter(filters.FilterSet):
     no_company = filters.BooleanFilter(field_name='company', lookup_expr='isnull')
     no_commercial_contact = filters.BooleanFilter(field_name='commercial_contact', lookup_expr='isnull')
 
+    is_fully_paid = filters.BooleanFilter(field_name='outstanding_amount', lookup_expr='exact', method='filter_fully_paid')
+
+    def filter_fully_paid(self, queryset, name, value):
+        if value:
+            return queryset.filter(**{name: 0})
+        return queryset
+
     class Meta:
         model = Contract
         fields = '__all__'
