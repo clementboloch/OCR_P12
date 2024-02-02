@@ -5,11 +5,15 @@ from rest_framework import generics
 from . import models
 from . import serializers
 
-class ClientList(generics.ListCreateAPIView):
+class ClientList(generics.ListAPIView):
     queryset = models.Client.objects.all()
     serializer_class = serializers.ClientSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = ClientFilter
+
+
+class ClientCreate(generics.CreateAPIView):
+    serializer_class = serializers.ClientCreateSerializer
 
 
 class ContractList(generics.ListAPIView):
@@ -19,6 +23,10 @@ class ContractList(generics.ListAPIView):
     filterset_class = ContractFilter
 
 
+class ContractCreate(generics.CreateAPIView):
+    serializer_class = serializers.ContractCreateSerializer
+
+
 class EventList(generics.ListAPIView):
     queryset = models.Event.objects.all()
     serializer_class = serializers.EventSerializer
@@ -26,8 +34,16 @@ class EventList(generics.ListAPIView):
     filterset_class = EventFilter
 
 
+class EventCreate(generics.CreateAPIView):
+    serializer_class = serializers.EventSerializer
+
+
 class EmployeeList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.EmployeeSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = EmployeeFilter
+
+
+class EmployeeCreate(generics.CreateAPIView):
+    serializer_class = serializers.EmployeeSerializer
