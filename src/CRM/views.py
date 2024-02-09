@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import *
 from rest_framework import generics
@@ -36,14 +35,3 @@ class EventList(generics.ListAPIView):
 
 class EventCreate(generics.CreateAPIView):
     serializer_class = serializers.EventSerializer
-
-
-class EmployeeList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = serializers.EmployeeSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = EmployeeFilter
-
-
-class EmployeeCreate(generics.CreateAPIView):
-    serializer_class = serializers.EmployeeSerializer

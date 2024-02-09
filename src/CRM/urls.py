@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from account.views import *
 
 urlpatterns = [
     path('client-list/', ClientList.as_view(), name='client-list'),
@@ -8,6 +9,8 @@ urlpatterns = [
     path('contract-create/', ContractCreate.as_view(), name='contract-create'),
     path('event-list/', EventList.as_view(), name='event-list'),
     path('event-create/', EventCreate.as_view(), name='event-create'),
+
+    # from account app
     path('employee-list/', EmployeeList.as_view(), name='employee-list'),
     path('employee-create/', EmployeeCreate.as_view(), name='employee-create'),
 ]

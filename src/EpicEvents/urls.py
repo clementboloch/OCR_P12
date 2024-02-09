@@ -15,20 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from .views import UserRegistrationView
 
 urlpatterns = [
-    # authentication
-    path('api-auth/register/', UserRegistrationView.as_view(), name='register'),
-    path("api-auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api-auth/login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-
     # my apps
     path('crm/', include('CRM.urls')),
+    path('auth/', include('account.urls')),
 
     # admin
     path('admin/', admin.site.urls),

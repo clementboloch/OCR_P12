@@ -45,8 +45,10 @@ INSTALLED_APPS = [
 
     # Local
     'CRM',
+    'account',
 ]
 
+AUTH_USER_MODEL = 'account.Employee'
 LOGIN_URL = '/api-auth/login/'
 
 REST_FRAMEWORK = {
