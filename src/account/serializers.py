@@ -7,50 +7,46 @@ from .models import *
 
 User = get_user_model()
 
-
 class GroupSerializer(serializers.ModelSerializer):    
     class Meta:
         model = Group
         fields = ('name',)
 
-
 class EmployeeSerializer(serializers.ModelSerializer):
     groups = GroupSerializer(many=True)
-    class Meta:
-        fields = ['first_name', 'last_name', 'email', 'date_joined', 'groups']
-        model = get_user_model()
 
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'date_joined', 'groups']
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
-    group_name = serializers.CharField(
-        write_only=True,
-        required=False
-    )
+    group_name = serializers.CharField(write_only=True, required=False)
 
     class Meta:
-        model = get_user_model()
-        fields = ['email', 'group_name', 'first_name', 'last_name', 'birthdate']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'birthdate', 'group_name', 'password']
+        extra_kwargs = {'password': {'write_only': True, 'required': False}}
 
     def validate_group_name(self, value):
         if value:
-            try:
-                group = Group.objects.get(name=value)
-            except Group.DoesNotExist:
+            if not Group.objects.filter(name=value).exists():
                 raise serializers.ValidationError("This group does not exist.")
-            return group
-        return None
+        return value
 
     def create(self, validated_data):
-        group_data = validated_data.pop('group_name', None)
+        group_name = validated_data.pop('group_name', None)
         user = super().create(validated_data)
-        if group_data:
-            user.group_name = group_data
-            user.save()
-        return user
+        user.is_active = False
+        if validated_data.get('password'):
+            user.set_password(validated_data['password'])
+            user.is_active = True
+        user.save()
 
+        if group_name:
+            group = Group.objects.get(name=group_name)
+            user.groups.add(group)
+
+        return user
 
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -69,9 +65,7 @@ class PasswordResetSerializer(serializers.Serializer):
         return data
 
     def save(self):
-        email = self.validated_data['email']
-        new_password = self.validated_data['new_password']
-        user = User.objects.get(email=email)
-        user.set_password(new_password)
+        user = User.objects.get(email=self.validated_data['email'])
+        user.set_password(self.validated_data['new_password'])
         user.is_active = True
         user.save()
