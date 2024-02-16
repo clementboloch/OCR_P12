@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.response import Response
 from . import filters
 from . import serializers
+from . import models
 
 
 class EmployeeList(generics.ListAPIView):
@@ -24,6 +25,19 @@ class EmployeeCreate(generics.CreateAPIView):
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
         return Response({'user_id': user.id, 'token': token})
+
+
+class EmployeeModification(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Employee.objects.all()
+    serializer_class = serializers.EmployeeSerializer
+
+    serializer_class_post = serializers.EmployeeCreateSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return super().get_serializer_class()
+        else:
+            return self.serializer_class_post
 
 
 class PasswordReset(generics.GenericAPIView):
