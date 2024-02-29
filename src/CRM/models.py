@@ -1,6 +1,8 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 class Client(models.Model):
     name = models.CharField(max_length=50)
@@ -9,7 +11,7 @@ class Client(models.Model):
     company = models.CharField(max_length=50, null=True, blank=True)
     created_date = models.DateField(auto_now_add=True)
     last_update = models.DateField(auto_now=True)
-    commercial_contact = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    commercial_contact = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -38,7 +40,7 @@ class Event(models.Model):
     location = models.CharField(max_length=50, null=True, blank=True)
     attendees = models.IntegerField(null=True, blank=True)
     notes = models.TextField(max_length=10000, null=True, blank=True)
-    support_contact = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    support_contact = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.contract.client} ({self.start_date} - {self.end_date})"

@@ -27,7 +27,7 @@ class Employee(AbstractUser):
     def __str__(self):
         groups = self.groups.values_list('name',flat = True)
         if groups:
-            group = groups[0]
+            group = groups.first()
         else:
             group = "No team"
         return f"{self.first_name} {self.last_name} - {group}"

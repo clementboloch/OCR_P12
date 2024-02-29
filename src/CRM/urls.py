@@ -9,8 +9,8 @@ urlpatterns = [
     path('contract-list/', ContractList.as_view(), name='contract-list'),
     path('contract-create/', ContractCreate.as_view(), name='contract-create'),
     path('contract-modify/<int:pk>/', ContractModification.as_view(), name='contract-modify'),
+    path('contract-add-event/<int:pk>/', EventCreate.as_view(), name='contract-add-event'),
     path('event-list/', EventList.as_view(), name='event-list'),
-    path('event-create/', EventCreate.as_view(), name='event-create'),
     path('event-modify/<int:pk>/', EventModification.as_view(), name='event-modify'),
 
     # from account app
