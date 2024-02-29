@@ -17,7 +17,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'date_joined', 'groups']
+        fields = ['pk', 'first_name', 'last_name', 'email', 'date_joined', 'groups']
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
     group_name = serializers.CharField(write_only=True, required=False)

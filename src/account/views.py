@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from . import filters
 from . import serializers
 from . import models
+from .permissions import is_in_group_name_permission
 
 
 class EmployeeList(generics.ListAPIView):
@@ -16,6 +17,7 @@ class EmployeeList(generics.ListAPIView):
 
 
 class EmployeeCreate(generics.CreateAPIView):
+    permission_classes = [is_in_group_name_permission('Management')]
     serializer_class = serializers.EmployeeCreateSerializer
 
     def post(self, request, *args, **kwargs):
@@ -28,6 +30,7 @@ class EmployeeCreate(generics.CreateAPIView):
 
 
 class EmployeeModification(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [is_in_group_name_permission('Management')]
     queryset = models.Employee.objects.all()
     serializer_class = serializers.EmployeeSerializer
 
