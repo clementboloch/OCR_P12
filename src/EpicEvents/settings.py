@@ -10,6 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://f63998dc19412f37694c9773996a88a9@o4506960278454272.ingest.us.sentry.io/4506960303882240",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
+
 from pathlib import Path
 from datetime import timedelta
 
