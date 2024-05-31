@@ -81,7 +81,7 @@ def make_authenticated_request(
         headers=headers,
         json=json,
         )
-    if response.status_code == 401:
+    if response.status_code in [401, 403]:
         typer.echo("You are not authorized or authentication token expired. Try to reconnect with 'login' command.", err=True)
     else:
         response.raise_for_status()
@@ -127,11 +127,12 @@ def employeemodification(
         'birthdate': birthdate,
         'group_name': group_name.value,
     }
-    parameters = {k: v for k, v in parameters.items() if v}
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
     
     url = f'http://127.0.0.1:8000/crm/employee-modify/{id}/'
 
-    make_authenticated_request(url=url, json = parameters, type='patch')
+    r = make_authenticated_request(url=url, json = parameters, type='patch')
+    typer.echo(r)
 
 
 @app.command()
@@ -155,8 +156,177 @@ def passwordreset(
 @app.command()
 def employeelist():
     url = 'http://127.0.0.1:8000/crm/employee-list/'
-    response = make_authenticated_request(url=url)
-    print(response)
+    r = make_authenticated_request(url=url)
+    typer.echo(r)
+
+
+@app.command()
+def clientlist():
+    url = 'http://127.0.0.1:8000/crm/client-list/'
+    r = make_authenticated_request(url=url)
+    typer.echo(r)
+
+
+@app.command()
+def clientcreate(
+    name:Annotated[str, typer.Option(prompt=True)],
+    email:Annotated[str, typer.Option(prompt=True)] = '',
+    phone:Annotated[str, typer.Option(prompt=True)] = '',
+    company:Annotated[str, typer.Option(prompt=True)] = '',
+    ):
+    
+    url = 'http://127.0.0.1:8000/crm/client-create/'
+    parameters = {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'company': company,
+    }
+
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+
+    r = make_authenticated_request(url=url, json = parameters, type='post')
+    typer.echo(r)
+
+
+@app.command()
+def clientmodification(
+    id:Annotated[int, typer.Option(prompt=True)],
+    name:Annotated[str, typer.Option(prompt=True)] = '',
+    email:Annotated[str, typer.Option(prompt=True)] = '',
+    phone:Annotated[str, typer.Option(prompt=True)] = '',
+    company:Annotated[str, typer.Option(prompt=True)] = '',
+    ):
+
+    parameters = {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'company': company,
+    }
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+    
+    url = f'http://127.0.0.1:8000/crm/client-modify/{id}/'
+
+    r = make_authenticated_request(url=url, json = parameters, type='patch')
+    typer.echo(r)
+
+
+@app.command()
+def contractlist():
+    url = 'http://127.0.0.1:8000/crm/contract-list/'
+    r = make_authenticated_request(url=url)
+    typer.echo(r)
+
+
+@app.command()
+def contractcreate(
+    client:Annotated[int, typer.Option(prompt=True)],
+    amount:Annotated[float, typer.Option(prompt=True)] = -1,
+    outstanding_amount:Annotated[float, typer.Option(prompt=True)] = -1,
+    is_signed:Annotated[bool, typer.Option(prompt=True)] = False,
+    ):
+
+    url = 'http://127.0.0.1:8000/crm/contract-create/'
+    parameters = {
+        'client': client,
+        'amount': amount,
+        'outstanding_amount': outstanding_amount,
+        'is_signed': is_signed,
+    }
+
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+
+    r = make_authenticated_request(url=url, json = parameters, type='post')
+    typer.echo(r)
+
+
+@app.command()
+def contractmodification(
+    id:Annotated[int, typer.Option(prompt=True)],
+    client:Annotated[int, typer.Option(prompt=True)] = -1,
+    amount:Annotated[float, typer.Option(prompt=True)] = -1,
+    outstanding_amount:Annotated[float, typer.Option(prompt=True)] = -1,
+    is_signed:Annotated[bool, typer.Option(prompt=True)] = False,
+    ):
+
+    parameters = {
+    'client': client,
+    'amount': amount,
+    'outstanding_amount': outstanding_amount,
+    'is_signed': is_signed,
+    }
+
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+
+    url = f'http://127.0.0.1:8000/crm/contract-modify/{id}/'
+
+    r = make_authenticated_request(url=url, json = parameters, type='patch')
+    typer.echo(r)
+
+
+@app.command()
+def eventlist():
+    url = 'http://127.0.0.1:8000/crm/event-list/'
+    r = make_authenticated_request(url=url)
+    typer.echo(r)
+
+
+@app.command()
+def contractaddevent(
+    contract:Annotated[int, typer.Option(prompt=True)],
+    start_date:Annotated[str, typer.Option(prompt=True)] = '',
+    end_date:Annotated[str, typer.Option(prompt=True)] = '',
+    location:Annotated[str, typer.Option(prompt=True)] = '',
+    attendees:Annotated[int, typer.Option(prompt=True)] = -1,
+    notes:Annotated[str, typer.Option(prompt=True)] = '',
+    support_contact:Annotated[int, typer.Option(prompt=True)] = -1,
+    ):
+
+    url = f'http://127.0.0.1:8000/crm/contract-add-event/{contract}/'
+    parameters = {
+        'start_date': start_date,
+        'end_date': end_date,
+        'location': location,
+        'attendees': attendees,
+        'notes': notes,
+        'support_contact': support_contact,
+    }
+
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+
+    r = make_authenticated_request(url=url, json = parameters, type='post')
+    typer.echo(r)
+
+
+@app.command()
+def eventmodification(
+    id:Annotated[int, typer.Option(prompt=True)],
+    contract:Annotated[int, typer.Option(prompt=True)] = -1,
+    start_date:Annotated[str, typer.Option(prompt=True)] = '',
+    end_date:Annotated[str, typer.Option(prompt=True)] = '',
+    location:Annotated[str, typer.Option(prompt=True)] = '',
+    attendees:Annotated[int, typer.Option(prompt=True)] = -1,
+    notes:Annotated[str, typer.Option(prompt=True)] = '',
+    support_contact:Annotated[int, typer.Option(prompt=True)] = -1,
+    ):
+
+    parameters = {
+        'contract': contract,
+        'start_date': start_date,
+        'end_date': end_date,
+        'location': location,
+        'attendees': attendees,
+        'notes': notes,
+        'support_contact': support_contact,
+    }
+
+    parameters = {k: v for k, v in parameters.items() if v not in ['', -1]}
+
+    url = f'http://127.0.0.1:8000/crm/event-modify/{id}/'
+
+    r = make_authenticated_request(url=url, json = parameters, type='patch')
+    typer.echo(r)
 
 if __name__ == "__main__":
     app()
