@@ -7,6 +7,9 @@ class ClientFilter(filters.FilterSet):
     max_created_date = filters.DateFilter(field_name='created_date', lookup_expr='lte')
 
     no_email = uncategorized = filters.BooleanFilter(field_name='email', lookup_expr='isnull')
+    no_phone = filters.BooleanFilter(field_name='phone', lookup_expr='isnull')
+    no_company = filters.BooleanFilter(field_name='company', lookup_expr='isnull')
+    no_commercial_contact = filters.BooleanFilter(field_name='commercial_contact', lookup_expr='isnull')
 
     class Meta:
         model = Client
@@ -24,10 +27,6 @@ class ContractFilter(filters.FilterSet):
     max_outstading_amount = filters.NumberFilter(field_name="outstanding_amount", lookup_expr='lte')
 
     no_amount = uncategorized = filters.BooleanFilter(field_name='amount', lookup_expr='isnull')
-    no_phone = filters.BooleanFilter(field_name='phone', lookup_expr='isnull')
-    no_company = filters.BooleanFilter(field_name='company', lookup_expr='isnull')
-    no_commercial_contact = filters.BooleanFilter(field_name='commercial_contact', lookup_expr='isnull')
-
     is_fully_paid = filters.BooleanFilter(field_name='outstanding_amount', lookup_expr='exact', method='filter_fully_paid')
 
     def filter_fully_paid(self, queryset, name, value):
