@@ -31,10 +31,10 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
         if value:
             if not Group.objects.filter(name=value).exists():
                 raise serializers.ValidationError("This group does not exist.")
-        return value
+        return Group.objects.filter(name=value).first()
 
     def create(self, validated_data):
-        group_name = validated_data.pop('group_name', None)
+        group_name = validated_data.get('group_name', None)
         user = super().create(validated_data)
         user.is_active = False
         if validated_data.get('password'):
@@ -47,6 +47,17 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
             user.groups.add(group)
 
         return user
+
+    def update(self, instance, validated_data):
+        group_name = validated_data.get('group_name', None)
+        super().update(instance, validated_data)
+
+        if group_name:
+            group = Group.objects.get(name=group_name)
+            instance.groups.clear()
+            instance.groups.add(group)
+
+        return self.instance
 
 
 class PasswordResetSerializer(serializers.Serializer):
