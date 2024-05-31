@@ -19,6 +19,12 @@ app = typer.Typer()
 TOKEN_URL = "http://127.0.0.1:8000/auth/login/"
 TOKEN_FILE = Path("user_token.txt")
 
+def get_filters(filters:dict):
+    f = "&".join([f'{k}={v}' for k, v in filters.items() if v not in ['', -1]])
+    if f:
+        f = '?' + f 
+    return f
+
 def get_token(
         email: str,
         password: str,
@@ -161,8 +167,26 @@ def employeelist():
 
 
 @app.command()
-def clientlist():
-    url = 'http://127.0.0.1:8000/crm/client-list/'
+def clientlist(
+    min_created_date:Annotated[str, typer.Option()] = '',
+    max_created_date:Annotated[str, typer.Option()] = '',
+    no_email:Annotated[bool, typer.Option()] = False,
+    no_phone:Annotated[bool, typer.Option()] = False,
+    no_company:Annotated[bool, typer.Option()] = False,
+    no_commercial_contact:Annotated[bool, typer.Option()] = False,
+):
+    
+    filters = {
+        'min_created_date': min_created_date,
+        'max_created_date': max_created_date,
+        'no_email': no_email if no_email else '',
+        'no_phone': no_phone if no_phone else '',
+        'no_company': no_company if no_company else '',
+        'no_commercial_contact': no_commercial_contact if no_commercial_contact else '',
+    }
+    filters = get_filters(filters)
+
+    url = f'http://127.0.0.1:8000/crm/client-list/{filters}'
     r = make_authenticated_request(url=url)
     typer.echo(r)
 
@@ -213,8 +237,29 @@ def clientmodification(
 
 
 @app.command()
-def contractlist():
-    url = 'http://127.0.0.1:8000/crm/contract-list/'
+def contractlist(
+    min_created_date:Annotated[str, typer.Option()] = '',
+    max_created_date:Annotated[str, typer.Option()] = '',
+    min_amount:Annotated[float, typer.Option()] = -1,
+    max_amount:Annotated[float, typer.Option()] = -1,
+    min_outstading_amount:Annotated[float, typer.Option()] = -1,
+    max_outstading_amount:Annotated[float, typer.Option()] = -1,
+    no_amount:Annotated[bool, typer.Option()] = False,
+    is_fully_paid:Annotated[bool, typer.Option()] = False,
+):
+    filters = {
+        'min_created_date': min_created_date,
+        'max_created_date': max_created_date,
+        'min_amount': min_amount,
+        'max_amount': max_amount,
+        'min_outstading_amount': min_outstading_amount,
+        'max_outstading_amount': max_outstading_amount,
+        'no_amount': no_amount if no_amount else '',
+        'is_fully_paid': is_fully_paid if is_fully_paid else '',
+    }
+    filters = get_filters(filters)
+
+    url = f'http://127.0.0.1:8000/crm/contract-list/{filters}'
     r = make_authenticated_request(url=url)
     typer.echo(r)
 
@@ -266,8 +311,36 @@ def contractmodification(
 
 
 @app.command()
-def eventlist():
-    url = 'http://127.0.0.1:8000/crm/event-list/'
+def eventlist(
+    min_start_date:Annotated[str, typer.Option()] = '',
+    max_start_date:Annotated[str, typer.Option()] = '',
+    min_end_date:Annotated[str, typer.Option()] = '',
+    max_end_date:Annotated[str, typer.Option()] = '',
+    min_attendees:Annotated[int, typer.Option()] = -1,
+    max_attendees:Annotated[int, typer.Option()] = -1,
+    no_start_date:Annotated[bool, typer.Option()] = False,
+    no_end_date:Annotated[bool, typer.Option()] = False,
+    no_location:Annotated[bool, typer.Option()] = False,
+    no_attendees:Annotated[bool, typer.Option()] = False,
+    no_notes:Annotated[bool, typer.Option()] = False,
+    no_support_contact:Annotated[bool, typer.Option()] = False,
+):
+    filters = {
+        'min_start_date': min_start_date,
+        'max_start_date': max_start_date,
+        'min_end_date': min_end_date,
+        'max_end_date': max_end_date,
+        'min_attendees': min_attendees,
+        'max_attendees': max_attendees,
+        'no_start_date': no_start_date if no_start_date else '',
+        'no_end_date': no_end_date if no_end_date else '',
+        'no_location': no_location if no_location else '',
+        'no_attendees': no_attendees if no_attendees else '',
+        'no_notes': no_notes if no_notes else '',
+        'no_support_contact': no_support_contact if no_support_contact else '',
+    }
+    filters = get_filters(filters)
+    url = f'http://127.0.0.1:8000/crm/event-list/{filters}'
     r = make_authenticated_request(url=url)
     typer.echo(r)
 
