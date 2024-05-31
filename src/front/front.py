@@ -131,7 +131,25 @@ def employeemodification(
     
     url = f'http://127.0.0.1:8000/crm/employee-modify/{id}/'
 
-    make_authenticated_request(url=url, json = parameters, type=('patch'))
+    make_authenticated_request(url=url, json = parameters, type='patch')
+
+
+@app.command()
+def passwordreset(
+    email:Annotated[str, typer.Option(prompt=True)],
+    token:Annotated[str, typer.Option(prompt=True)],
+    new_password: Annotated[str, typer.Option(prompt=True, confirmation_prompt=True, hide_input=True)]
+):
+    parameters = {
+        'email': email,
+        'token': token,
+        'new_password': new_password,
+    }
+
+    url = 'http://127.0.0.1:8000/auth/reset-password/'
+
+    r = make_authenticated_request(url=url, json = parameters, type='post')
+    typer.echo(r)
 
 
 @app.command()
