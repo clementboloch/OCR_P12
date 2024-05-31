@@ -17,12 +17,13 @@ class Employee(AbstractUser):
     is_staff = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    group_name = models.ForeignKey(Group, on_delete=models.SET_NULL, blank=True, null=True)
-
     objects = EmployeeManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.group_name}"
+        groups = self.groups.values_list('name', flat=True)
+        groups = list(groups)
+        groups = ', '.join(groups)
+        return f"{self.first_name} {self.last_name} - {groups}"

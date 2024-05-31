@@ -34,7 +34,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
         return Group.objects.filter(name=value).first()
 
     def create(self, validated_data):
-        group_name = validated_data.get('group_name', None)
+        group_name = validated_data.pop('group_name', None)
         user = super().create(validated_data)
         user.is_active = False
         if validated_data.get('password'):
@@ -49,7 +49,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        group_name = validated_data.get('group_name', None)
+        group_name = validated_data.pop('group_name', None)
         super().update(instance, validated_data)
 
         if group_name:
