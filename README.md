@@ -33,12 +33,14 @@ Ensure PostgreSQL is running and access the PostgreSQL command line interface (C
 `psql postgres`
 Then, run the following SQL commands to create the database and user with the specified settings:
 `CREATE DATABASE epicevents;`
-`CREATE USER admin WITH PASSWORD '9090';`
+`CREATE USER admin WITH SUPERUSER PASSWORD '9090';`
 `GRANT ALL PRIVILEGES ON DATABASE epicevents TO admin;`
 
 
 Go to src folder:
 `cd src`
+Create the groups:
+`python manage.py add_custom_groups`
 And make the migrations:
 `python manage.py migrate`
 
