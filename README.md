@@ -44,6 +44,10 @@ Make the migrations:
 And create the groups:
 `python manage.py add_custom_groups`
 
+## Run test
+To run the tests, in the `src` folder run the command:
+`pytest`
+
 ## Launch the program
 Launch the local server:
 `python manage.py runserver`
