@@ -39,10 +39,10 @@ Then, run the following SQL commands to create the database and user with the sp
 
 Go to src folder:
 `cd src`
-Create the groups:
-`python manage.py add_custom_groups`
-And make the migrations:
+Make the migrations:
 `python manage.py migrate`
+And create the groups:
+`python manage.py add_custom_groups`
 
 ## Launch the program
 Launch the local server:
